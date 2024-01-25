@@ -16,7 +16,7 @@ function TaskList() {
     ];
 
     const { isLoading, data} = useQuery('tasks', getTasks);
-  
+
     if (isLoading){
         return 
     }
@@ -30,8 +30,7 @@ function TaskList() {
         }
         if (item.status === 1){
             row.push({id: item.id, title: item.title, description: item.description, status: "完了",  deadline: item.deadline})
-        }
-        
+        }   
     }
 
     return (
