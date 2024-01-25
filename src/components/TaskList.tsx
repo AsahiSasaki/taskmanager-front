@@ -1,13 +1,16 @@
 import { useQuery } from 'react-query';
 import axios from 'axios';
 import { DataGrid, GridRowParams} from '@mui/x-data-grid'
+import { FC } from 'react';
+import TaskForm from './TaskForm';
   
 const getTasks = async () => {
   const res = await axios.get('http://localhost:8080/tasks');
   return res.data;
 };
 
-function TaskList() {
+export const TaskList: FC = () => {
+
     const columns = [
         { field: 'title', headerName: 'タスク名', width: 200 },
         { field: 'description', headerName: 'タスク内容', width: 300 },
@@ -15,12 +18,11 @@ function TaskList() {
         { field: 'deadline', headerName: '期日', width: 150 },
     ];
 
-    const { isLoading, data} = useQuery('tasks', getTasks);
+    const { isLoading, data, refetch} = useQuery('tasks', getTasks);
 
     if (isLoading){
         return 
     }
-
     //テーブルの値
     const row = [];
 
@@ -35,6 +37,7 @@ function TaskList() {
 
     return (
         <div>
+        <TaskForm refetch={refetch}/>
         <h2>タスク一覧</h2>
         <DataGrid
             rows={row}
