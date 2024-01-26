@@ -2,7 +2,7 @@ import { Box, Button, TextField } from '@mui/material'
 import axios from 'axios'
 import { FC } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
-import { useMutation } from 'react-query'
+import { useMutation, useQueryClient } from 'react-query'
 
 const createTask = async (data: any) => {
   await axios.post('http://localhost:8080/tasks', data);
@@ -14,23 +14,21 @@ type FormData = {
   deadline : Date
 }
 
-interface TaskFormProps {
-  refetch: Function;
-}
-
-export const TaskForm: FC<TaskFormProps> = ({refetch}) => {
+export const TaskForm: FC = () => {
 
   const today = new Date();
   const formattedToday = today.toISOString().slice(0, 10);
+
+  const queryClient = useQueryClient();
   
   const { handleSubmit, register, setValue } = useForm<FormData>();
 
   const mutation = useMutation((data:FormData) => createTask(data),
     {
       onSuccess: () => {
-      setValue('title', '');
-      setValue('description', '')
-      refetch();
+        setValue('title', '');
+        setValue('description', '')
+        queryClient.invalidateQueries("tasks");
       }
     }
   );
