@@ -8,7 +8,7 @@ export const getTasks = async () => {
 
 //タスク取得(byID)
 export const getTask = async (id: number) => {
-    const res = await axios.get('http://localhost:8080/tasks'+id);
+    const res = await axios.get('http://localhost:8080/tasks/'+id);
     return res.data;
 };
 
@@ -19,7 +19,7 @@ export const createTask = async (data: any) => {
 
 //タスク更新
 export const updateTask = async (id: number, data: any) => {
-    await axios.post('http://localhost:8080/tasks'+id, data);
+    await axios.post('http://localhost:8080/tasks/'+id, data);
 };
 
 //タスク削除

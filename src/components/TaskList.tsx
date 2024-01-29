@@ -15,6 +15,16 @@ export const TaskList: FC = () => {
         { field: 'description', headerName: 'タスク内容', width: 300 },
         { field: 'status', headerName: 'ステータス', width: 150 },
         { field: 'deadline', headerName: '期日', width: 150 },
+        {
+            field: 'editBtn',
+            headerName: '詳細',
+            sortable: false,
+            width: 90,
+            disableClickEventBubbling: true,
+            renderCell: (params: any) => <Button variant="contained" color="primary" onClick={() => {
+                console.log("詳細ボタンがクリック", params.row.id);
+            }}>詳細</Button>
+        },
     ];
 
     const deleteTasks = async () => {
@@ -55,6 +65,7 @@ export const TaskList: FC = () => {
             rows={row}
             columns={columns}
             checkboxSelection
+            disableRowSelectionOnClick
             apiRef={apiRef}
             sx={{
                 '& .rows-incomplete': {
