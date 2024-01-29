@@ -1,18 +1,8 @@
 import { useMutation, useQuery, useQueryClient } from 'react-query';
-import axios from 'axios';
 import { DataGrid, GridRowParams, useGridApiRef } from '@mui/x-data-grid'
 import { FC } from 'react';
-import TaskForm from './TaskForm';
 import { Button } from '@mui/material';
-
-const getTasks = async () => {
-    const res = await axios.get('http://localhost:8080/tasks');
-    return res.data;
-};
-
-const deleteTask = async (id:number) => {
-    await axios.delete('http://localhost:8080/tasks/'+id);
-};
+import { getTasks, deleteTask} from '../apis/api'
 
 export const TaskList: FC = () => {
     const apiRef = useGridApiRef();
@@ -60,7 +50,6 @@ export const TaskList: FC = () => {
 
     return (
         <div>
-        <TaskForm />
         <Button color='warning' onClick={() => deleteMutation.mutate()}>削除</Button>
         <DataGrid
             rows={row}

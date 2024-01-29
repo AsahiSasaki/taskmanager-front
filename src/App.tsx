@@ -1,14 +1,15 @@
 import { QueryClient, QueryClientProvider } from 'react-query';
 import './App.css'
 import TaskList from './components/TaskList.tsx'
-import { StrictMode } from 'react';
+import TaskForm from './components/TaskForm.tsx';
 
 function App() {
   const queryClient = new QueryClient();
   return (
     <>
       <QueryClientProvider client={queryClient}>
-      <TaskList/>
+        <TaskForm />
+        <TaskList/>
       </QueryClientProvider>
     </>
   )

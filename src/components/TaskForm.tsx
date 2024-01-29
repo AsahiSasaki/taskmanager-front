@@ -1,12 +1,8 @@
 import { Box, Button, TextField } from '@mui/material'
-import axios from 'axios'
 import { FC } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import { useMutation, useQueryClient } from 'react-query'
-
-const createTask = async (data: any) => {
-  await axios.post('http://localhost:8080/tasks', data);
-}
+import { createTask } from '../apis/api'
 
 type FormData = {
   title : String
