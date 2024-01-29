@@ -6,8 +6,8 @@ import TaskForm from './TaskForm';
 import { Button } from '@mui/material';
 
 const getTasks = async () => {
-  const res = await axios.get('http://localhost:8080/tasks');
-  return res.data;
+    const res = await axios.get('http://localhost:8080/tasks');
+    return res.data;
 };
 
 const deleteTask = async (id:number) => {
@@ -28,18 +28,18 @@ export const TaskList: FC = () => {
     ];
 
     const deleteTasks = async () => {
-        const selectRows = apiRef.current.getSelectedRows();  
+        const selectRows = apiRef.current.getSelectedRows();
+        const deletePromises: Promise<void>[] = []
         selectRows.forEach(v => {
-            deleteTask(v.id);
-            console.log(v.id);
-        });
+            deletePromises.push(deleteTask(v.id));
+        })
+        await Promise.all(deletePromises);
     };
-
-    const mutation = useMutation(() => deleteTasks(),
+    const deleteMutation = useMutation(() => deleteTasks(),
     {
-      onSuccess: () => {
-        queryClient.invalidateQueries("tasks");
-      }
+        onSuccess: () => {
+            queryClient.invalidateQueries("tasks");
+        }
     });
 
     if (isLoading){
@@ -61,7 +61,7 @@ export const TaskList: FC = () => {
     return (
         <div>
         <TaskForm />
-        <Button color='warning' onClick={() => mutation.mutate()}>削除</Button>
+        <Button color='warning' onClick={() => deleteMutation.mutate()}>削除</Button>
         <DataGrid
             rows={row}
             columns={columns}

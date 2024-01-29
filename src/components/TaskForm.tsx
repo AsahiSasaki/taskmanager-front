@@ -23,7 +23,7 @@ export const TaskForm: FC = () => {
   
   const { handleSubmit, register, setValue } = useForm<FormData>();
 
-  const mutation = useMutation((data:FormData) => createTask(data),
+  const createMutation = useMutation((data:FormData) => createTask(data),
     {
       onSuccess: () => {
         setValue('title', '');
@@ -34,7 +34,7 @@ export const TaskForm: FC = () => {
   );
 
   const onSubmit: SubmitHandler<FormData> = (data) => {
-    mutation.mutate(data);
+    createMutation.mutate(data);
   };
 
   return (
