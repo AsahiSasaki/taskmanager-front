@@ -3,12 +3,7 @@ import { FC } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import { useMutation, useQueryClient } from 'react-query'
 import { createTask } from '../apis/api'
-
-type FormData = {
-  title : String
-  description : String
-  deadline : Date
-}
+import { TaskData } from '../apis/api'
 
 export const TaskForm: FC = () => {
 
@@ -17,9 +12,9 @@ export const TaskForm: FC = () => {
 
   const queryClient = useQueryClient();
   
-  const { handleSubmit, register, setValue } = useForm<FormData>();
+  const { handleSubmit, register, setValue } = useForm<TaskData>();
 
-  const createMutation = useMutation((data:FormData) => createTask(data),
+  const createMutation = useMutation((data:TaskData) => createTask(data),
     {
       onSuccess: () => {
         setValue('title', '');
@@ -29,7 +24,7 @@ export const TaskForm: FC = () => {
     }
   );
 
-  const onSubmit: SubmitHandler<FormData> = (data) => {
+  const onSubmit: SubmitHandler<TaskData> = (data) => {
     createMutation.mutate(data);
   };
 

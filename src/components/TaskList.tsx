@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from 'react-query';
-import { DataGrid, GridRowParams, useGridApiRef } from '@mui/x-data-grid'
+import { DataGrid, GridRenderCellParams, GridRowParams, useGridApiRef } from '@mui/x-data-grid'
 import { FC } from 'react';
 import { Button } from '@mui/material';
 import { getTasks, deleteTask} from '../apis/api'
@@ -21,8 +21,8 @@ export const TaskList: FC = () => {
             sortable: false,
             width: 90,
             disableClickEventBubbling: true,
-            renderCell: (params: any) => <Button variant="contained" color="primary" onClick={() => {
-                console.log("詳細ボタンがクリック", params.row.id);
+            renderCell: (params:  GridRenderCellParams) => <Button variant="contained" color="primary" onClick={() => {
+                window.location.href = `http://localhost:5173/${params.row.id}`;
             }}>詳細</Button>
         },
     ];
@@ -45,17 +45,12 @@ export const TaskList: FC = () => {
     if (isLoading){
         return 
     }
-   
+
     //テーブルの値
     const row = [];
 
-    for (let item of data) {
-        if (item.status === 0){
-            row.push({id: item.id, title: item.title, description: item.description, status: "未完了",  deadline: item.deadline})
-        }
-        if (item.status === 1){
-            row.push({id: item.id, title: item.title, description: item.description, status: "完了",  deadline: item.deadline})
-        }   
+    for (const item of data) {
+        row.push({id: item.id, title: item.title, description: item.description, status: item.status === 1 ? '完了' : '未完了',  deadline: item.deadline})
     };
 
     return (
