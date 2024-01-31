@@ -1,7 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from 'react-query';
 import { DataGrid, GridRenderCellParams, GridRowParams, useGridApiRef } from '@mui/x-data-grid'
 import { FC } from 'react';
-import { Button } from '@mui/material';
+import { Box, Button } from '@mui/material';
 import { getTasks, deleteTask} from '../apis/api'
 
 export const TaskList: FC = () => {
@@ -54,29 +54,33 @@ export const TaskList: FC = () => {
     };
 
     return (
-        <div>
-        <Button color='warning' onClick={() => deleteMutation.mutate()}>削除</Button>
-        <DataGrid
-            rows={row}
-            columns={columns}
-            checkboxSelection
-            disableRowSelectionOnClick
-            apiRef={apiRef}
-            sx={{
-                '& .rows-incomplete': {
-                    background: '#FFC4B5 !important'
-                },
-                height:"700px",width:"1000px",fontSize:18,border:"none"
-            }}
-            getRowClassName={(params: GridRowParams) => {
-                if (params.row.status === "未完了") {
-                    return 'rows-incomplete'
-                } else {
-                    return '';
-                }
-            }}
-        />
-        </div>
+        <>
+             <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+                <Button color='warning' variant="contained" size="large" onClick={() => deleteMutation.mutate()}>削除</Button>
+            </Box>
+            <Box>
+                <DataGrid
+                    rows={row}
+                    columns={columns}
+                    checkboxSelection
+                    disableRowSelectionOnClick
+                    apiRef={apiRef}
+                    sx={{
+                        '& .rows-incomplete': {
+                            background: '#FFC4B5 !important'
+                        },
+                        height:"420px",width:"960px",fontSize:18,border:"none"
+                    }}
+                    getRowClassName={(params: GridRowParams) => {
+                        if (params.row.status === "未完了") {
+                            return 'rows-incomplete'
+                        } else {
+                            return '';
+                        }
+                    }}
+                />
+            </Box>
+        </>
     );
 }
 
