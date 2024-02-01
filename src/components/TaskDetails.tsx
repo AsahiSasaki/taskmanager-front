@@ -1,35 +1,41 @@
 import { FC, useEffect, useState } from 'react'
-import { useParams } from "react-router-dom";
 import { TaskData, getTask, updateTask } from '../apis/api'
-import { useMutation, useQuery } from 'react-query';
-import { Box, Button, TextField } from '@mui/material';
+import { useMutation, useQuery, useQueryClient } from 'react-query';
+import { Box, Button, CircularProgress, TextField } from '@mui/material';
 import { SubmitHandler, useForm } from 'react-hook-form';
 
-export const TaskDetails: FC = () => {
+interface taskId {
+    id: number,
+    handleClose: () => void;
+}
+    
+export const TaskDetails: FC<taskId> = ({id, handleClose}) => {
 
-    const { id } = useParams();
+    const [status, setStatus] = useState<number | null>(null);
+    
+    const queryClient = useQueryClient();
 
-    const { data} = useQuery(['task', id], () => getTask(Number(id)));
+    const { data, isLoading } = useQuery(['task', id], () => getTask(Number(id)));
+    
     const { handleSubmit, register } = useForm<TaskData>();
     
     const updateMutation = useMutation((data:TaskData) => updateTask(Number(id), data),
         {
         onSuccess: () => {
-            window.location.href = `http://localhost:5173`;
+            handleClose();
+            queryClient.invalidateQueries("tasks");
         }
         }
     );
-
-    const [status, setStatus] = useState<number | null>(null);
 
     useEffect(() => {
         if (data) {
             setStatus(data.status);
         }
     },[data]);
-
-    if (status === null){
-        return 
+    
+    if (isLoading || status === null){
+        return <CircularProgress />;
     }
 
     const onSubmit: SubmitHandler<TaskData> = (data) => {
@@ -44,11 +50,11 @@ export const TaskDetails: FC = () => {
     return (
         <>
             <Box component="form" onSubmit={handleSubmit(onSubmit)}>
-                <Box sx = {{ marginBottom: 2 }}>
-                    <TextField label="タスク名" {...register('title')} defaultValue={data.title} placeholder="Title" />
+                <Box sx = {{ marginTop: 2, marginBottom: 2 }}>
+                    <TextField label="タスク名" fullWidth multiline {...register('title')} defaultValue={data.title} placeholder="Title" />
                 </Box>
                 <Box sx = {{ marginBottom: 2 }}>
-                    <TextField label="タスク内容" {...register('description')} defaultValue={data.description} placeholder="Description" />
+                    <TextField label="タスク内容" fullWidth multiline {...register('description')} defaultValue={data.description} placeholder="Description" />
                 </Box>
                 <Box sx = {{ marginBottom: 2 }}>
                     <TextField type="date" label="期日" {...register('deadline')} defaultValue={data.deadline} placeholder="Deadline" />
@@ -62,7 +68,7 @@ export const TaskDetails: FC = () => {
                     </Button>
                 </Box>
                 <Box>
-                    <Button type="submit">適用</Button>
+                    <Button type="submit" variant="contained">OK</Button>
                 </Box>
             </Box>
         </>

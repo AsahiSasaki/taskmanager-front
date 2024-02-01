@@ -1,12 +1,10 @@
 import { Route, Routes } from 'react-router-dom';
-import Top from '../pages/top';
-import TaskDetails from '../pages/TaskDetails';
+import TaskManager from '../pages/TaskManager';
 
 const Router = () => {
     return (
         <Routes>
-            <Route  path="/" element={<Top />} />
-            <Route  path="/:id" element={<TaskDetails />} />
+            <Route  path="/" element={<TaskManager />} />
         </Routes>
     );
 };

@@ -5,7 +5,7 @@ import { useMutation, useQueryClient } from 'react-query'
 import { createTask, TaskData } from '../apis/api'
 
 export const TaskForm: FC = () => {
-
+    //今日の日付をyyyy-mm-ddのフォーマットで取得
     const today = new Date();
     const formattedToday = today.toISOString().slice(0, 10);
 

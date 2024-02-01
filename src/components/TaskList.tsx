@@ -1,15 +1,39 @@
-import { useMutation, useQuery, useQueryClient } from 'react-query';
+import { useQuery } from 'react-query';
 import { DataGrid, GridRenderCellParams, GridRowParams, useGridApiRef } from '@mui/x-data-grid'
-import { FC } from 'react';
-import { Box, Button } from '@mui/material';
-import { getTasks, deleteTask} from '../apis/api'
+import { FC, useState } from 'react';
+import { Box, Button, CircularProgress, Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material';
+import { getTasks } from '../apis/api'
+import { TaskDetails } from './TaskDetails'
+import TaskDelete from './TaskDelete';
 
 export const TaskList: FC = () => {
+    
+    //チェックを入れている行を取得するために使う
     const apiRef = useGridApiRef();
-    const queryClient = useQueryClient();
-
+    
+    //ダイアログ表示を制御
+    const [open, setOpen] = useState(false);
+    
+    //<TaskDetails />のpropsに使う ただの変数だと再レンダリングされない
+    const [selectedId, setSelectedId] = useState<number | null>(null);
+   
+    //タスク一覧のデータと、取得中の場合の早期リターンに使う
     const { isLoading, data} = useQuery('tasks', getTasks);
+   
+    //ダイアログ表示制御
+    const handleClickOpen = (id: number) => {
+        setSelectedId(id);
+        setOpen(true);
+    };
 
+    const handleClose = () => {
+        setOpen(false);
+    };
+
+    if (isLoading){
+        return <CircularProgress />;
+    }
+    
     const columns = [
         { field: 'title', headerName: 'タスク名', width: 200 },
         { field: 'description', headerName: 'タスク内容', width: 300 },
@@ -22,31 +46,11 @@ export const TaskList: FC = () => {
             width: 90,
             disableClickEventBubbling: true,
             renderCell: (params:  GridRenderCellParams) => <Button variant="contained" color="primary" onClick={() => {
-                window.location.href = `http://localhost:5173/${params.row.id}`;
+                handleClickOpen(params.row.id);
             }}>詳細</Button>
         },
     ];
 
-    const deleteTasks = async () => {
-        const selectRows = apiRef.current.getSelectedRows();
-        const deletePromises: Promise<void>[] = []
-        selectRows.forEach(v => {
-            deletePromises.push(deleteTask(v.id));
-        })
-        await Promise.all(deletePromises);
-    };
-    const deleteMutation = useMutation(() => deleteTasks(),
-    {
-        onSuccess: () => {
-            queryClient.invalidateQueries("tasks");
-        }
-    });
-
-    if (isLoading){
-        return 
-    }
-
-    //テーブルの値
     const row = [];
 
     for (const item of data) {
@@ -55,8 +59,8 @@ export const TaskList: FC = () => {
 
     return (
         <>
-             <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
-                <Button color='warning' variant="contained" size="large" onClick={() => deleteMutation.mutate()}>削除</Button>
+            <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+                <TaskDelete apiRef={apiRef}/>
             </Box>
             <Box>
                 <DataGrid
@@ -69,7 +73,7 @@ export const TaskList: FC = () => {
                         '& .rows-incomplete': {
                             background: '#FFC4B5 !important'
                         },
-                        height:"420px",width:"960px",fontSize:18,border:"none"
+                        height:"420px",width:"940px",fontSize:18,border:"none"
                     }}
                     getRowClassName={(params: GridRowParams) => {
                         if (params.row.status === "未完了") {
@@ -80,6 +84,30 @@ export const TaskList: FC = () => {
                     }}
                 />
             </Box>
+            <Dialog 
+                open={open}
+                onClose={handleClose}
+                PaperProps={{
+                    style: {
+                    height: '90%',
+                    width: '35%'
+                    },
+                }}>
+                <DialogTitle>タスク詳細</DialogTitle>
+                <DialogContent>
+                    <TaskDetails id={Number(selectedId)} handleClose={handleClose} />
+                </DialogContent>
+                <DialogActions>
+                    {/* ToDo
+                    ここのボタンをクリックして更新できるようにしたい
+                    <Button>
+                        OK
+                    </Button> */}
+                    <Button onClick={handleClose} color="primary">
+                        Cancel
+                    </Button>
+                </DialogActions>
+            </Dialog>
         </>
     );
 }
