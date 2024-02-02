@@ -4,10 +4,10 @@ import { useMutation, useQueryClient } from 'react-query';
 import { deleteTask } from '../apis/api'
 import { GridApi, GridRowModel } from '@mui/x-data-grid';
 
-interface DeleteTasksButtonProps {
+interface DeleteTaskProps {
     apiRef: MutableRefObject<GridApi>
 }
-export const TaskDelte: FC<DeleteTasksButtonProps> = ({ apiRef }) => {
+export const DeleteTask: FC<DeleteTaskProps> = ({ apiRef }) => {
     const queryClient = useQueryClient();
 
     const deleteTasks = async () => {
@@ -31,4 +31,4 @@ export const TaskDelte: FC<DeleteTasksButtonProps> = ({ apiRef }) => {
     );
 }
 
-export default TaskDelte;
+export default DeleteTask;

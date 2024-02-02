@@ -4,28 +4,28 @@ import { useMutation, useQuery, useQueryClient } from 'react-query';
 import { Box, Button, CircularProgress, TextField } from '@mui/material';
 import { SubmitHandler, useForm } from 'react-hook-form';
 
-interface taskId {
+interface TaskDetailsProps {
     id: number,
     handleClose: () => void;
 }
     
-export const TaskDetails: FC<taskId> = ({id, handleClose}) => {
+export const TaskDetails: FC<TaskDetailsProps> = ({id, handleClose}) => {
 
     const [status, setStatus] = useState<number | null>(null);
-    
+
     const queryClient = useQueryClient();
 
     const { data, isLoading } = useQuery(['task', id], () => getTask(Number(id)));
-    
+
     const { handleSubmit, register } = useForm<TaskData>();
-    
+
     const updateMutation = useMutation((data:TaskData) => updateTask(Number(id), data),
         {
         onSuccess: () => {
             handleClose();
             queryClient.invalidateQueries("tasks");
-        }
-        }
+            queryClient.invalidateQueries("task");
+        }}
     );
 
     useEffect(() => {
@@ -68,7 +68,7 @@ export const TaskDetails: FC<taskId> = ({id, handleClose}) => {
                     </Button>
                 </Box>
                 <Box>
-                    <Button type="submit" variant="contained">OK</Button>
+                    <Button type="submit" variant="contained">更新</Button>
                 </Box>
             </Box>
         </>
@@ -76,4 +76,3 @@ export const TaskDetails: FC<taskId> = ({id, handleClose}) => {
 }
 
 export default TaskDetails;
-
