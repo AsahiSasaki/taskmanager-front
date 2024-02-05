@@ -1,4 +1,4 @@
-import { FC, useEffect, useState } from 'react'
+import { FC, useEffect } from 'react'
 import { TaskData, getTask, updateTask } from '../apis/api'
 import { useMutation, useQuery, useQueryClient } from 'react-query'
 import { Box, Button, CircularProgress, TextField } from '@mui/material'
@@ -10,13 +10,13 @@ interface TaskDetailsProps {
 }
 
 export const TaskDetails: FC<TaskDetailsProps> = ({ id, handleClose }) => {
-    const [status, setStatus] = useState<number>()
-
     const queryClient = useQueryClient()
 
     const { data, isLoading } = useQuery(['task', id], () => getTask(id))
 
-    const { handleSubmit, register } = useForm<TaskData>()
+    const { handleSubmit, register, watch, setValue } = useForm<TaskData>()
+
+    const status = watch('status')
 
     const updateMutation = useMutation(
         (data: TaskData) => updateTask(id, data),
@@ -31,7 +31,7 @@ export const TaskDetails: FC<TaskDetailsProps> = ({ id, handleClose }) => {
 
     useEffect(() => {
         if (data) {
-            setStatus(data.status)
+            setValue('status', data.status)
         }
     }, [data])
 
@@ -40,12 +40,11 @@ export const TaskDetails: FC<TaskDetailsProps> = ({ id, handleClose }) => {
     }
 
     const onSubmit: SubmitHandler<TaskData> = (data) => {
-        const updatedData = { ...data, status }
-        updateMutation.mutate(updatedData)
+        updateMutation.mutate(data)
     }
 
     const toggleStatus = () => {
-        setStatus(status === 1 ? 0 : 1)
+        setValue('status', status === 1 ? 0 : 1)
     }
 
     return (
@@ -82,6 +81,7 @@ export const TaskDetails: FC<TaskDetailsProps> = ({ id, handleClose }) => {
                 </Box>
                 <Box sx={{ marginBottom: 2 }}>
                     <Button
+                        {...register('status')}
                         onClick={toggleStatus}
                         style={{
                             backgroundColor:
