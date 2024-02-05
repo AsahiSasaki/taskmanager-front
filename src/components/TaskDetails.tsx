@@ -57,7 +57,7 @@ export const TaskDetails: FC<TaskDetailsProps> = ({ id, handleClose }) => {
                         fullWidth
                         multiline
                         {...register('title')}
-                        defaultValue={data.title}
+                        defaultValue={data?.title}
                         placeholder="Title"
                     />
                 </Box>
@@ -67,7 +67,7 @@ export const TaskDetails: FC<TaskDetailsProps> = ({ id, handleClose }) => {
                         fullWidth
                         multiline
                         {...register('description')}
-                        defaultValue={data.description}
+                        defaultValue={data?.description}
                         placeholder="Description"
                     />
                 </Box>
@@ -76,7 +76,7 @@ export const TaskDetails: FC<TaskDetailsProps> = ({ id, handleClose }) => {
                         type="date"
                         label="期日"
                         {...register('deadline')}
-                        defaultValue={data.deadline}
+                        defaultValue={data?.deadline}
                         placeholder="Deadline"
                     />
                 </Box>
