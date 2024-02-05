@@ -42,18 +42,7 @@ export const TaskList: FC = () => {
         },
     ]
 
-    const row = []
-
-    for (const item of data ?? []) {
-        row.push({
-            id: item.id,
-            title: item.title,
-            description: item.description,
-            status: item.status === 1 ? '完了' : '未完了',
-            deadline: item.deadline,
-        })
-    }
-
+    //即時関数
     const dataGridRows = (() =>
         data?.map((item) => ({
             id: item.id,
@@ -62,15 +51,6 @@ export const TaskList: FC = () => {
             status: item.status === 1 ? '完了' : '未完了',
             deadline: item.deadline,
         })) ?? [])()
-
-    const dataGridRowsFunction = () =>
-        data?.map((item) => ({
-            id: item.id,
-            title: item.title,
-            description: item.description,
-            status: item.status === 1 ? '完了' : '未完了',
-            deadline: item.deadline,
-        })) ?? []
 
     return (
         <>
