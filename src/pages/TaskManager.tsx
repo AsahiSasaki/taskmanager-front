@@ -6,7 +6,7 @@ function TaskManager() {
     return (
         <>
             <Box sx={{ alignItems: 'flex-start', marginBottom: 3 }}>
-                <TaskForm />
+                <TaskForm isNewTask={true} />
             </Box>
             <Box>
                 <TaskList />

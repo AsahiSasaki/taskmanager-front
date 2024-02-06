@@ -4,7 +4,12 @@ import { SubmitHandler, useForm } from 'react-hook-form'
 import { useMutation, useQueryClient } from 'react-query'
 import { createTask, TaskData } from '../apis/api'
 
-export const TaskForm: FC = () => {
+interface TaskFormProps {
+    initialData?: TaskData
+    isNewTask?: boolean
+}
+
+export const TaskForm: FC<TaskFormProps> = ({ initialData, isNewTask }) => {
     //今日の日付をyyyy-mm-ddのフォーマットで取得
     const today = new Date()
     const formattedToday = today.toISOString().slice(0, 10)
@@ -36,6 +41,7 @@ export const TaskForm: FC = () => {
                     label="タスク名"
                     sx={{ width: 400 }}
                     multiline
+                    defaultValue={initialData?.title}
                     {...register('title')}
                 />
             </Box>
@@ -44,6 +50,7 @@ export const TaskForm: FC = () => {
                     label="タスク内容"
                     sx={{ width: 400 }}
                     multiline
+                    defaultValue={initialData?.description}
                     {...register('description')}
                 />
             </Box>
@@ -51,10 +58,11 @@ export const TaskForm: FC = () => {
                 <TextField
                     label="期日"
                     type="date"
-                    value={formattedToday}
+                    defaultValue={initialData?.deadline ?? formattedToday}
                     {...register('deadline')}
                     placeholder="Deadline"
                 />
+                {isNewTask && (
                 <Button
                     type="submit"
                     variant="contained"
@@ -63,6 +71,7 @@ export const TaskForm: FC = () => {
                 >
                     登録
                 </Button>
+                )}
             </Box>
         </Box>
     )
