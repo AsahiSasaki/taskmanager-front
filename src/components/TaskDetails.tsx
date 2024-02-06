@@ -3,6 +3,7 @@ import { TaskData, getTask, updateTask } from '../apis/api'
 import { useMutation, useQuery, useQueryClient } from 'react-query'
 import { Box, Button, CircularProgress, TextField } from '@mui/material'
 import { SubmitHandler, useForm } from 'react-hook-form'
+import TaskForm from './TaskForm'
 
 interface TaskDetailsProps {
     id: number
@@ -50,35 +51,7 @@ export const TaskDetails: FC<TaskDetailsProps> = ({ id, handleClose }) => {
     return (
         <>
             <Box component="form" onSubmit={handleSubmit(onSubmit)}>
-                <Box sx={{ marginTop: 2, marginBottom: 2 }}>
-                    <TextField
-                        label="タスク名"
-                        fullWidth
-                        multiline
-                        {...register('title')}
-                        defaultValue={data?.title}
-                        placeholder="Title"
-                    />
-                </Box>
-                <Box sx={{ marginBottom: 2 }}>
-                    <TextField
-                        label="タスク内容"
-                        fullWidth
-                        multiline
-                        {...register('description')}
-                        defaultValue={data?.description}
-                        placeholder="Description"
-                    />
-                </Box>
-                <Box sx={{ marginBottom: 2 }}>
-                    <TextField
-                        type="date"
-                        label="期日"
-                        {...register('deadline')}
-                        defaultValue={data?.deadline}
-                        placeholder="Deadline"
-                    />
-                </Box>
+                <TaskForm mode={1} handleClose={handleClose} id={id} />
                 <Box sx={{ marginBottom: 2 }}>
                     <Button
                         {...register('status')}
