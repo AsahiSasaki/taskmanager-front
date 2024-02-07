@@ -1,9 +1,15 @@
-import { DataGrid, GridRenderCellParams, GridRowParams } from '@mui/x-data-grid'
+import {
+    DataGrid,
+    GridRenderCellParams,
+    GridRowModel,
+    GridRowParams,
+} from '@mui/x-data-grid'
 import { FC } from 'react'
 import { Box, Button, CircularProgress } from '@mui/material'
-import DeleteTask from './DeleteTask'
+import { deleteTask } from '../apis/api'
 import { TaskDialog } from './TaskDialog'
 import { useTasks, useDeleteTask, useTaskDialog } from '../hooks/hooks'
+import { useMutation, useQueryClient } from 'react-query'
 
 export const TaskList: FC = () => {
     //タスク一覧取得フック
@@ -12,6 +18,24 @@ export const TaskList: FC = () => {
     const { selectedId, open, handleClickOpen, handleClose } = useTaskDialog()
     //タスク削除フック
     const { apiRef } = useDeleteTask()
+
+    const queryClient = useQueryClient()
+
+    //タスク削除
+    const deleteTasks = async () => {
+        const selectedRows = apiRef.current.getSelectedRows()
+        const deletePromises: Promise<void>[] = []
+        selectedRows.forEach((v: GridRowModel) => {
+            deletePromises.push(deleteTask(v.id))
+        })
+        await Promise.all(deletePromises)
+    }
+
+    const deleteMutation = useMutation(() => deleteTasks(), {
+        onSuccess: () => {
+            queryClient.invalidateQueries('tasks')
+        },
+    })
 
     if (isLoading) {
         return <CircularProgress />
@@ -55,7 +79,14 @@ export const TaskList: FC = () => {
     return (
         <>
             <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
-                <DeleteTask apiRef={apiRef} />
+                <Button
+                    color="warning"
+                    variant="contained"
+                    size="large"
+                    onClick={() => deleteMutation.mutate()}
+                >
+                    削除
+                </Button>
             </Box>
             <Box>
                 <DataGrid

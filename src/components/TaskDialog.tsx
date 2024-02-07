@@ -6,7 +6,6 @@ import {
     Button,
 } from '@mui/material'
 import TaskForm from './TaskForm'
-import TaskDetails from './TaskDetails'
 
 interface TaskDialogProps {
     open: boolean
@@ -37,10 +36,6 @@ export const TaskDialog: React.FC<TaskDialogProps> = ({
                     id={Number(selectedId)}
                     handleClose={handleClose}
                 />
-                {/* <TaskDetails
-                    id={Number(selectedId)}
-                    handleClose={handleClose}
-                /> */}
             </DialogContent>
             <DialogActions>
                 <Button onClick={handleClose} color="primary">
