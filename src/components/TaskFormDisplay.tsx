@@ -1,63 +1,31 @@
-import { Box, Button, CircularProgress, TextField } from '@mui/material'
-import { FC, useEffect } from 'react'
-import { SubmitHandler, useForm } from 'react-hook-form'
-import { useMutation, useQuery, useQueryClient } from 'react-query'
-import { createTask, getTask, updateTask, TaskData } from '../apis/api'
+import { Box, Button, TextField } from '@mui/material'
+import { FC } from 'react'
+import { TaskData } from '../apis/api'
+import { UseFormRegister } from 'react-hook-form'
 
-interface TaskFormProps {
+interface TaskFormDisplayProps {
     mode: number
-    id?: number
-    handleClose?: () => void
+    register: UseFormRegister<TaskData>
+    onSubmit: () => void
+    data?: TaskData
+    formattedToday?: string
+    status?: number
+    toggleStatus?: () => void
 }
 
-export const TaskForm: FC<TaskFormProps> = ({ id, mode, handleClose }) => {
-    const today = new Date()
-    const formattedToday = today.toISOString().slice(0, 10)
-
-    const queryClient = useQueryClient()
-
-    const { data, isLoading } = id
-        ? useQuery(['task', id], () => getTask(id))
-        : { data: undefined, isLoading: false }
-
-    const { handleSubmit, register, watch, setValue } = useForm<TaskData>()
-
-    const status = watch('status')
-
-    const taskMutation = useMutation(
-        (data: TaskData) => (id ? updateTask(id, data) : createTask(data)),
-        {
-            onSuccess: () => {
-                handleClose && handleClose()
-                !id && (setValue('title', ''), setValue('description', ''))
-                queryClient.invalidateQueries('tasks')
-                queryClient.invalidateQueries('task')
-            },
-        },
-    )
-
-    useEffect(() => {
-        if (data) {
-            setValue('status', data.status)
-        }
-    }, [data])
-
-    if (isLoading || (mode === 1 && status === undefined)) {
-        return <CircularProgress />
-    }
-
-    const onSubmit: SubmitHandler<TaskData> = (data) => {
-        taskMutation.mutate(data)
-    }
-
-    const toggleStatus = () => {
-        setValue('status', status === 1 ? 0 : 1)
-    }
-
+export const TaskFormDisplay: FC<TaskFormDisplayProps> = ({
+    mode,
+    status,
+    register,
+    onSubmit,
+    toggleStatus,
+    data,
+    formattedToday,
+}) => {
     return (
         <Box
             component="form"
-            onSubmit={handleSubmit(onSubmit)}
+            onSubmit={onSubmit}
             sx={{ marginLeft: mode === 0 ? -50 : 0 }}
         >
             <Box sx={{ marginTop: mode === 0 ? 0 : 2, marginBottom: 2 }}>
@@ -133,4 +101,4 @@ export const TaskForm: FC<TaskFormProps> = ({ id, mode, handleClose }) => {
     )
 }
 
-export default TaskForm
+export default TaskFormDisplay

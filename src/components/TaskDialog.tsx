@@ -5,7 +5,7 @@ import {
     DialogTitle,
     Button,
 } from '@mui/material'
-import TaskForm from './TaskForm'
+import TaskFormProvider from './TaskFormProvider'
 
 interface TaskDialogProps {
     open: boolean
@@ -31,7 +31,7 @@ export const TaskDialog: React.FC<TaskDialogProps> = ({
         >
             <DialogTitle>タスク詳細</DialogTitle>
             <DialogContent>
-                <TaskForm
+                <TaskFormProvider
                     mode={1}
                     id={Number(selectedId)}
                     handleClose={handleClose}

@@ -1,7 +1,7 @@
-import { useQuery } from 'react-query'
-import { getTasks } from '../apis/api'
+import { useMutation, useQuery, useQueryClient } from 'react-query'
+import { deleteTask, getTasks } from '../apis/api'
 import { useState } from 'react'
-import { useGridApiRef } from '@mui/x-data-grid'
+import { GridRowModel, useGridApiRef } from '@mui/x-data-grid'
 
 //タスク一覧取得
 export const useTasks = () => {
@@ -23,9 +23,25 @@ export const useTaskDialog = () => {
     return { selectedId, open, handleClickOpen, handleClose }
 }
 
-//削除時の選択行取得
+//タスク削除
 export const useDeleteTask = () => {
-    //チェックを入れている行を取得するために使う
+    //チェックを入れている行を取得する
     const apiRef = useGridApiRef()
-    return { apiRef }
+    const queryClient = useQueryClient()
+
+    const deleteTasks = async () => {
+        const selectedRows = apiRef.current.getSelectedRows()
+        const deletePromises: Promise<void>[] = []
+        selectedRows.forEach((v: GridRowModel) => {
+            deletePromises.push(deleteTask(v.id))
+        })
+        await Promise.all(deletePromises)
+    }
+
+    const deleteMutation = useMutation(() => deleteTasks(), {
+        onSuccess: () => {
+            queryClient.invalidateQueries('tasks')
+        },
+    })
+    return { apiRef, deleteMutation }
 }
