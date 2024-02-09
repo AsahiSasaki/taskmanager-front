@@ -90,11 +90,6 @@ export const TaskFormDisplay: FC<TaskFormDisplayProps> = ({
                             {status === 1 ? '完了' : '未完了'}
                         </Button>
                     </Box>
-                    <Box sx={{ marginBottom: 2 }}>
-                        <Button type="submit" variant="contained" size="large">
-                            更新
-                        </Button>
-                    </Box>
                 </>
             )}
         </Box>

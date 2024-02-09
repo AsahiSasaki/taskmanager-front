@@ -1,15 +1,21 @@
 import { CircularProgress } from '@mui/material'
-import { FC, useEffect } from 'react'
+import { FC, useEffect, useRef } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import { useMutation, useQuery, useQueryClient } from 'react-query'
 import { createTask, getTask, updateTask, TaskData } from '../apis/api'
 import TaskFormDisplay from './TaskFormDisplay'
+import { atom, useRecoilState } from 'recoil' // Recoilをインポート
 
 interface TaskFormProviderProps {
     mode: number
     id?: number
     handleClose?: () => void
 }
+
+export const updateFunctionState = atom({
+    key: 'updateFunction',
+    default: () => {},
+})
 
 export const TaskFormProvider: FC<TaskFormProviderProps> = ({
     id,
@@ -28,6 +34,9 @@ export const TaskFormProvider: FC<TaskFormProviderProps> = ({
     const { handleSubmit, register, watch, setValue } = useForm<TaskData>()
 
     const status = watch('status')
+    const formData = watch()
+
+    const [, setUpdateFunction] = useRecoilState(updateFunctionState)
 
     const taskMutation = useMutation(
         (data: TaskData) => (id ? updateTask(id, data) : createTask(data)),
@@ -46,6 +55,16 @@ export const TaskFormProvider: FC<TaskFormProviderProps> = ({
             setValue('status', data.status)
         }
     }, [data])
+
+    const formDataRef = useRef(formData)
+
+    useEffect(() => {
+        formDataRef.current = formData
+    }, [formData])
+
+    useEffect(() => {
+        setUpdateFunction(() => () => taskMutation.mutate(formDataRef.current))
+    }, [taskMutation.mutate])
 
     if (isLoading || (mode === 1 && status === undefined)) {
         return <CircularProgress />
@@ -73,4 +92,3 @@ export const TaskFormProvider: FC<TaskFormProviderProps> = ({
 }
 
 export default TaskFormProvider
-

@@ -5,7 +5,8 @@ import {
     DialogTitle,
     Button,
 } from '@mui/material'
-import TaskFormProvider from './TaskFormProvider'
+import TaskFormProvider, { updateFunctionState } from './TaskFormProvider'
+import { useRecoilState } from 'recoil'
 
 interface TaskDialogProps {
     open: boolean
@@ -18,10 +19,18 @@ export const TaskDialog: React.FC<TaskDialogProps> = ({
     handleClose,
     selectedId,
 }) => {
+    //更新処理
+    const [updateFunction] = useRecoilState(updateFunctionState)
+
+    const handleUpdateClick = () => {
+        if (updateFunction) {
+            updateFunction()
+        }
+    }
+
     return (
         <Dialog
             open={open}
-            onClose={handleClose}
             PaperProps={{
                 style: {
                     height: '90%',
@@ -38,6 +47,9 @@ export const TaskDialog: React.FC<TaskDialogProps> = ({
                 />
             </DialogContent>
             <DialogActions>
+                <Button onClick={handleUpdateClick} color="primary">
+                    更新
+                </Button>
                 <Button onClick={handleClose} color="primary">
                     閉じる
                 </Button>
