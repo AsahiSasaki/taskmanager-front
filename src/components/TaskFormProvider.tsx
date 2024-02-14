@@ -4,8 +4,7 @@ import { SubmitHandler, useForm } from 'react-hook-form'
 import { useMutation, useQuery, useQueryClient } from 'react-query'
 import { createTask, getTask, updateTask, TaskData } from '../apis/api'
 import TaskFormDisplay from './TaskFormDisplay'
-import { atom, useRecoilState } from 'recoil' // Recoilをインポート
-
+import { atom, useRecoilState } from 'recoil'
 interface TaskFormProviderProps {
     mode: number
     id?: number
@@ -39,7 +38,9 @@ export const TaskFormProvider: FC<TaskFormProviderProps> = ({
     const [, setUpdateFunction] = useRecoilState(updateFunctionState)
 
     const taskMutation = useMutation(
-        (data: TaskData) => (id ? updateTask(id, data) : createTask(data)),
+        (data: TaskData) => {
+            return id ? updateTask(id, data) : createTask(data)
+        },
         {
             onSuccess: () => {
                 handleClose && handleClose()
@@ -52,6 +53,9 @@ export const TaskFormProvider: FC<TaskFormProviderProps> = ({
 
     useEffect(() => {
         if (data) {
+            setValue('title', data.title)
+            setValue('description', data.description)
+            setValue('deadline', data.deadline)
             setValue('status', data.status)
         }
     }, [data])
