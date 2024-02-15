@@ -1,7 +1,7 @@
 import { Box, Button, TextField } from '@mui/material'
 import { FC } from 'react'
 import { TaskData } from '../apis/api'
-import { UseFormRegister } from 'react-hook-form'
+import { FormState, UseFormRegister, UseFormSetValue } from 'react-hook-form'
 
 interface TaskFormDisplayProps {
     mode: number
@@ -11,6 +11,8 @@ interface TaskFormDisplayProps {
     formattedToday?: string
     status?: number
     toggleStatus?: () => void
+    formState: FormState<TaskData>
+    setValue: UseFormSetValue<TaskData>
 }
 
 export const TaskFormDisplay: FC<TaskFormDisplayProps> = ({
@@ -21,6 +23,8 @@ export const TaskFormDisplay: FC<TaskFormDisplayProps> = ({
     toggleStatus,
     data,
     formattedToday,
+    formState,
+    setValue,
 }) => {
     return (
         <Box
@@ -33,9 +37,16 @@ export const TaskFormDisplay: FC<TaskFormDisplayProps> = ({
                     label="タスク名"
                     fullWidth
                     multiline
-                    {...register('title')}
+                    {...register('title', { required: 'タスク名は必須です' })}
                     defaultValue={data?.title}
                     sx={{ width: 400 }}
+                    error={Boolean(formState.errors.title)}
+                    helperText={formState.errors.title?.message}
+                    onBlur={(e) => {
+                        setValue('title', e.target.value, {
+                            shouldValidate: true,
+                        })
+                    }}
                 />
             </Box>
             <Box sx={{ marginBottom: 2 }}>
@@ -43,7 +54,9 @@ export const TaskFormDisplay: FC<TaskFormDisplayProps> = ({
                     label="タスク内容"
                     fullWidth
                     multiline
-                    {...register('description')}
+                    {...register('description', {
+                        required: 'タスク内容は必須です',
+                    })}
                     defaultValue={data?.description}
                     sx={{ width: 400 }}
                 />

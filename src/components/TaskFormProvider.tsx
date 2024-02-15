@@ -16,6 +16,11 @@ export const updateFunctionState = atom({
     default: () => {},
 })
 
+export const formIsValidState = atom({
+    key: 'formIsValid',
+    default: false,
+})
+
 export const TaskFormProvider: FC<TaskFormProviderProps> = ({
     id,
     mode,
@@ -30,15 +35,21 @@ export const TaskFormProvider: FC<TaskFormProviderProps> = ({
         ? useQuery(['task', id], () => getTask(id))
         : { data: undefined, isLoading: false }
 
-    const { handleSubmit, register, watch, setValue } = useForm<TaskData>()
+    const { handleSubmit, register, watch, setValue, formState } =
+        useForm<TaskData>()
 
     const status = watch('status')
     const formData = watch()
 
     const [, setUpdateFunction] = useRecoilState(updateFunctionState)
+    const [, setFormIsValid] = useRecoilState(formIsValidState)
 
     const taskMutation = useMutation(
         (data: TaskData) => {
+            console.log('Title', data.title)
+            console.log('Description', data.description)
+            console.log('Deadline', data.deadline)
+            console.log('Status', data.status)
             return id ? updateTask(id, data) : createTask(data)
         },
         {
@@ -70,6 +81,10 @@ export const TaskFormProvider: FC<TaskFormProviderProps> = ({
         setUpdateFunction(() => () => taskMutation.mutate(formDataRef.current))
     }, [taskMutation.mutate])
 
+    useEffect(() => {
+        setFormIsValid(formState.isValid)
+    }, [formState.isValid])
+
     if (isLoading || (mode === 1 && status === undefined)) {
         return <CircularProgress />
     }
@@ -91,6 +106,8 @@ export const TaskFormProvider: FC<TaskFormProviderProps> = ({
             formattedToday={formattedToday}
             toggleStatus={toggleStatus}
             status={status}
+            formState={formState}
+            setValue={setValue}
         />
     )
 }

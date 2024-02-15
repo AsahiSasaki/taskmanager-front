@@ -7,6 +7,7 @@ import {
 } from '@mui/material'
 import TaskFormProvider, { updateFunctionState } from './TaskFormProvider'
 import { useRecoilState } from 'recoil'
+import { formIsValidState } from './TaskFormProvider'
 
 interface TaskDialogProps {
     open: boolean
@@ -21,9 +22,10 @@ export const TaskDialog: React.FC<TaskDialogProps> = ({
 }) => {
     //更新処理
     const [updateFunction] = useRecoilState(updateFunctionState)
+    const [formIsValid] = useRecoilState(formIsValidState)
 
     const handleUpdateClick = () => {
-        if (updateFunction) {
+        if (updateFunction && formIsValid) {
             updateFunction()
         }
     }
