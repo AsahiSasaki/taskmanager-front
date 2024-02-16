@@ -2,9 +2,12 @@ import { CircularProgress } from '@mui/material'
 import { FC, useEffect, useRef } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import { useMutation, useQuery, useQueryClient } from 'react-query'
-import { createTask, getTask, updateTask, TaskData } from '../apis/api'
+import { createTask, getTask, updateTask } from '../apis/api'
+import { TaskData, TaskDataSchema } from '../models/TaskData'
 import TaskFormDisplay from './TaskFormDisplay'
 import { atom, useRecoilState } from 'recoil'
+import { zodResolver } from '@hookform/resolvers/zod'
+
 interface TaskFormProviderProps {
     mode: number
     id?: number
@@ -36,7 +39,10 @@ export const TaskFormProvider: FC<TaskFormProviderProps> = ({
         : { data: undefined, isLoading: false }
 
     const { handleSubmit, register, watch, setValue, formState } =
-        useForm<TaskData>()
+        useForm<TaskData>({
+            resolver: zodResolver(TaskDataSchema),
+            mode: 'onBlur',
+        })
 
     const status = watch('status')
     const formData = watch()

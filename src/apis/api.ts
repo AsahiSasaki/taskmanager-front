@@ -1,12 +1,5 @@
 import axios from 'axios'
-
-export type TaskData = {
-    id: number
-    title: string
-    description: string
-    status: number
-    deadline: Date
-}
+import { TaskData } from '../models/TaskData'
 
 //タスク一覧取得
 export const getTasks: () => Promise<TaskData[]> = async () => {
