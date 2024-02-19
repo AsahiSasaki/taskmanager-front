@@ -43,7 +43,7 @@ export const TaskFormDisplay: FC<TaskFormDisplayProps> = ({
                     error={Boolean(formState.errors.title)}
                     helperText={formState.errors.title?.message}
                     onBlur={(e) => {
-                        setValue('title', e.target.value, {
+                        setValue('title', e.currentTarget.value, {
                             shouldValidate: true,
                         })
                     }}
@@ -60,7 +60,7 @@ export const TaskFormDisplay: FC<TaskFormDisplayProps> = ({
                     error={Boolean(formState.errors.description)}
                     helperText={formState.errors.description?.message}
                     onBlur={(e) => {
-                        setValue('description', e.target.value, {
+                        setValue('description', e.currentTarget.value, {
                             shouldValidate: true,
                         })
                     }}
@@ -76,7 +76,7 @@ export const TaskFormDisplay: FC<TaskFormDisplayProps> = ({
                         placeholder="Deadline"
                         error={Boolean(formState.errors.deadline)}
                         onBlur={(e) => {
-                            setValue('deadline', e.target.value, {
+                            setValue('deadline', e.currentTarget.value, {
                                 shouldValidate: true,
                             })
                         }}
@@ -117,7 +117,7 @@ export const TaskFormDisplay: FC<TaskFormDisplayProps> = ({
                             error={Boolean(formState.errors.deadline)}
                             helperText={formState.errors.deadline?.message}
                             onBlur={(e) => {
-                                setValue('deadline', e.target.value, {
+                                setValue('deadline', e.currentTarget.value, {
                                     shouldValidate: true,
                                 })
                             }}
