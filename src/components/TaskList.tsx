@@ -7,15 +7,11 @@ import {
 } from '@mui/x-data-grid'
 import { FC, MutableRefObject } from 'react'
 import { Box, Button } from '@mui/material'
-import { TaskDialog } from './TaskDialog'
 import { UseMutationResult } from 'react-query'
 
 interface TaskListDisplayProps {
     deleteMutation: UseMutationResult<void, unknown, void, unknown>
     apiRef: MutableRefObject<GridApi>
-    open: boolean
-    handleClose: () => void
-    selectedId?: number
     dataGridRows: GridRowModel[]
     columns: GridColDef[]
 }
@@ -23,9 +19,6 @@ interface TaskListDisplayProps {
 export const TaskListDisplay: FC<TaskListDisplayProps> = ({
     deleteMutation,
     apiRef,
-    open,
-    handleClose,
-    selectedId,
     dataGridRows,
     columns,
 }) => {
@@ -62,11 +55,6 @@ export const TaskListDisplay: FC<TaskListDisplayProps> = ({
                     }
                 />
             </Box>
-            <TaskDialog
-                open={open}
-                handleClose={handleClose}
-                selectedId={selectedId ? selectedId : null}
-            />
         </>
     )
 }

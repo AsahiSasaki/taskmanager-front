@@ -1,20 +1,14 @@
-import { FC } from 'react'
-import { Button, CircularProgress } from '@mui/material'
-import { useTasks, useDeleteTask, useTaskDialog } from '../hooks/hooks'
-import TaskListDisplay from './TaskListDisplay'
+import { Button } from '@mui/material'
+import { useTasks, useDeleteTask, useTaskDialog } from './hooks'
 import { GridRenderCellParams } from '@mui/x-data-grid'
 
-export const TaskListProvider: FC = () => {
+export const useTaskList = () => {
     //タスク一覧取得フック
     const { isLoading, data } = useTasks()
     //タスク詳細ダイアログフック
     const { selectedId, open, handleClickOpen, handleClose } = useTaskDialog()
     //タスク削除フック
     const { apiRef, deleteMutation } = useDeleteTask()
-
-    if (isLoading) {
-        return <CircularProgress />
-    }
 
     //表示する列を定義
     const columns = [
@@ -52,19 +46,16 @@ export const TaskListProvider: FC = () => {
             deadline: item.deadline,
         })) ?? [])()
 
-    return (
-        <>
-            <TaskListDisplay
-                deleteMutation={deleteMutation}
-                apiRef={apiRef}
-                open={open}
-                handleClose={handleClose}
-                selectedId={Number(selectedId)}
-                dataGridRows={dataGridRows}
-                columns={columns}
-            />
-        </>
-    )
+    return {
+        isLoading,
+        open,
+        handleClose,
+        selectedId: Number(selectedId),
+        dataGridRows,
+        columns,
+        deleteMutation,
+        apiRef,
+    }
 }
 
-export default TaskListProvider
+export default useTaskList

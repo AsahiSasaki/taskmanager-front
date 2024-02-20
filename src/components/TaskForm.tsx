@@ -90,7 +90,7 @@ export const TaskFormDisplay: FC<TaskFormDisplayProps> = ({
                         登録
                     </Button>
                     {formState.errors.deadline && (
-                        <div
+                        <Box
                             style={{
                                 fontFamily: 'Roboto, Helvetica, Arial',
                                 fontSize: '0.75rem',
@@ -102,7 +102,7 @@ export const TaskFormDisplay: FC<TaskFormDisplayProps> = ({
                             }}
                         >
                             {formState.errors.deadline.message}
-                        </div>
+                        </Box>
                     )}
                 </Box>
             ) : (
