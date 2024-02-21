@@ -29,6 +29,7 @@ export const TaskDialog: React.FC<TaskDialogProps> = ({
         formState,
         isLoading,
         setValue,
+        reset,
     } = useTaskForm(Number(selectedId), handleClose, open)
 
     if (!open) {
@@ -41,6 +42,7 @@ export const TaskDialog: React.FC<TaskDialogProps> = ({
 
     const handleCloseResetStatus = () => {
         handleClose()
+        reset()
     }
 
     return (

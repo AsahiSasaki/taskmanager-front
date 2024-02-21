@@ -115,13 +115,27 @@ export const TaskFormDisplay: FC<TaskFormDisplayProps> = ({
                             defaultValue={data?.deadline ?? formattedToday}
                             placeholder="Deadline"
                             error={Boolean(formState.errors.deadline)}
-                            helperText={formState.errors.deadline?.message}
                             onBlur={(e) => {
                                 setValue('deadline', e.currentTarget.value, {
                                     shouldValidate: true,
                                 })
                             }}
                         />
+                        {formState.errors.deadline && (
+                            <Box
+                                style={{
+                                    fontFamily: 'Roboto, Helvetica, Arial',
+                                    fontSize: '0.75rem',
+                                    fontWeight: '400',
+                                    color: '#d32f2f',
+                                    position: 'relative',
+                                    top: '3px',
+                                    left: '14px',
+                                }}
+                            >
+                                {formState.errors.deadline.message}
+                            </Box>
+                        )}
                     </Box>
                     <Box sx={{ marginBottom: 2 }}>
                         <Button

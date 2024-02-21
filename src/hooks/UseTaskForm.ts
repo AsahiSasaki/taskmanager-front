@@ -14,6 +14,7 @@ export const useTaskForm = (
     const formattedToday = today.toISOString().slice(0, 10)
 
     const queryClient = useQueryClient()
+
     const { data, isLoading } = useQuery(['task', id], () => getTask(id!), {
         enabled: !!id,
     })
@@ -30,6 +31,7 @@ export const useTaskForm = (
             onSuccess: () => {
                 handleClose && handleClose()
                 queryClient.invalidateQueries('tasks')
+                queryClient.invalidateQueries('task')
                 reset()
             },
         },
@@ -67,6 +69,7 @@ export const useTaskForm = (
         formState,
         setValue,
         isLoading,
+        reset,
     }
 }
 
