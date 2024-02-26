@@ -1,26 +1,7 @@
 import z from 'zod'
-
-//半角が含まれていないか
-const isFullWidth: (value: string) => boolean = (value: string) => {
-    const regExp = /[\x20-\x7E]/
-    return !regExp.test(value)
-}
-
-//日付になっているか
-const isDate: (value: string) => boolean = (value: string) => {
-    return !isNaN(Date.parse(value))
-}
-
-//今日以降の日付か
-const isFutureDate: (value: string) => boolean = (value: string) => {
-    const today = new Date()
-    today.setHours(0, 0, 0, 0)
-    const inputDate = new Date(value)
-    return inputDate >= today
-}
+import { isFullWidth, isDate, isFutureDate } from '../utils/validationUtils'
 
 export const TaskDataSchema = z.object({
-    id: z.number().optional(),
     title: z
         .string()
         .min(1, { message: 'タスク名は必須です' })
@@ -40,4 +21,10 @@ export const TaskDataSchema = z.object({
         }),
 })
 
-export type TaskData = z.infer<typeof TaskDataSchema>
+export type TaskData = {
+    id?: number
+    title: string
+    description: string
+    status?: number
+    deadline: string
+}

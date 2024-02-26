@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { TaskData } from '../models/TaskData'
+import { TaskData } from '../models/taskData'
 
 //タスク一覧取得
 export const getTasks: () => Promise<TaskData[]> = async () => {

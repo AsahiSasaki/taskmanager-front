@@ -6,13 +6,13 @@ import {
     Button,
     CircularProgress,
 } from '@mui/material'
-import { useTaskForm } from '../hooks/UseTaskForm'
-import TaskFormDisplay from './TaskForm'
+import { useTaskForm } from '../hooks/useTaskForm'
+import { TaskForm } from './TaskForm'
 
 interface TaskDialogProps {
+    selectedId?: number
     open: boolean
     handleClose: () => void
-    selectedId: number | null
 }
 
 export const TaskDialog: React.FC<TaskDialogProps> = ({
@@ -30,7 +30,7 @@ export const TaskDialog: React.FC<TaskDialogProps> = ({
         isLoading,
         setValue,
         reset,
-    } = useTaskForm(Number(selectedId), handleClose, open)
+    } = useTaskForm(selectedId, open, handleClose)
 
     if (!open) {
         return null
@@ -57,7 +57,7 @@ export const TaskDialog: React.FC<TaskDialogProps> = ({
         >
             <DialogTitle>タスク詳細</DialogTitle>
             <DialogContent>
-                <TaskFormDisplay
+                <TaskForm
                     mode={1}
                     register={register}
                     onSubmit={onSubmit}

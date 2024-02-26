@@ -2,22 +2,26 @@ import { useEffect } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import { useMutation, useQuery, useQueryClient } from 'react-query'
 import { createTask, getTask, updateTask } from '../apis/api'
-import { TaskData, TaskDataSchema } from '../models/TaskData'
+import { TaskData, TaskDataSchema } from '../models/taskData'
 import { zodResolver } from '@hookform/resolvers/zod'
 
 export const useTaskForm = (
-    id?: number,
-    handleClose?: () => void,
+    selectedId?: number,
     open?: boolean,
+    handleClose?: () => void,
 ) => {
     const today = new Date()
     const formattedToday = today.toISOString().slice(0, 10)
 
     const queryClient = useQueryClient()
 
-    const { data, isLoading } = useQuery(['task', id], () => getTask(id!), {
-        enabled: !!id,
-    })
+    const { data, isLoading } = useQuery(
+        ['task', selectedId],
+        () => getTask(selectedId!),
+        {
+            enabled: !!selectedId,
+        },
+    )
 
     const { handleSubmit, register, watch, setValue, formState, reset } =
         useForm<TaskData>({
@@ -26,7 +30,8 @@ export const useTaskForm = (
         })
 
     const taskMutation = useMutation(
-        (data: TaskData) => (id ? updateTask(id, data) : createTask(data)),
+        (data: TaskData) =>
+            selectedId ? updateTask(selectedId, data) : createTask(data),
         {
             onSuccess: () => {
                 handleClose && handleClose()
@@ -72,5 +77,3 @@ export const useTaskForm = (
         reset,
     }
 }
-
-export default useTaskForm

@@ -1,9 +1,9 @@
 import { Box, Button, TextField } from '@mui/material'
 import { FC } from 'react'
-import { TaskData } from '../models/TaskData'
+import { TaskData } from '../models/taskData'
 import { FormState, UseFormRegister, UseFormSetValue } from 'react-hook-form'
 
-interface TaskFormDisplayProps {
+interface TaskFormProps {
     mode: number
     register: UseFormRegister<TaskData>
     onSubmit: () => void
@@ -15,7 +15,7 @@ interface TaskFormDisplayProps {
     setValue: UseFormSetValue<TaskData>
 }
 
-export const TaskFormDisplay: FC<TaskFormDisplayProps> = ({
+export const TaskForm: FC<TaskFormProps> = ({
     mode,
     status,
     register,
@@ -43,7 +43,7 @@ export const TaskFormDisplay: FC<TaskFormDisplayProps> = ({
                     error={Boolean(formState.errors.title)}
                     helperText={formState.errors.title?.message}
                     onBlur={(e) => {
-                        setValue('title', e.currentTarget.value, {
+                        setValue('title', e.currentTarget.value.trim(), {
                             shouldValidate: true,
                         })
                     }}
@@ -60,7 +60,7 @@ export const TaskFormDisplay: FC<TaskFormDisplayProps> = ({
                     error={Boolean(formState.errors.description)}
                     helperText={formState.errors.description?.message}
                     onBlur={(e) => {
-                        setValue('description', e.currentTarget.value, {
+                        setValue('description', e.currentTarget.value.trim(), {
                             shouldValidate: true,
                         })
                     }}
@@ -155,5 +155,3 @@ export const TaskFormDisplay: FC<TaskFormDisplayProps> = ({
         </Box>
     )
 }
-
-export default TaskFormDisplay

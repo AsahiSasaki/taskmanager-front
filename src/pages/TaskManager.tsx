@@ -1,11 +1,11 @@
 import { Box, CircularProgress } from '@mui/material'
-import { useTaskForm } from '../hooks/UseTaskForm.ts'
-import TaskForm from '../components/TaskForm.tsx'
-import { useTaskList } from '../hooks/UseTaskList.tsx'
-import TaskList from '../components/TaskList.tsx'
+import { useTaskForm } from '../hooks/useTaskForm.ts'
+import { TaskForm } from '../components/TaskForm.tsx'
+import { useTaskList } from '../hooks/useTaskList.tsx'
+import { TaskList } from '../components/TaskList.tsx'
 import { TaskDialog } from '../components/TaskDialog.tsx'
 
-function TaskManager() {
+export function TaskManager() {
     const {
         register,
         onSubmit,
@@ -54,14 +54,12 @@ function TaskManager() {
                     dataGridRows={dataGridRows}
                     columns={columns}
                 />
-                <TaskDialog
-                    open={open}
-                    handleClose={handleClose}
-                    selectedId={selectedId ? selectedId : null}
-                />
             </Box>
+            <TaskDialog
+                open={open}
+                handleClose={handleClose}
+                selectedId={selectedId}
+            />
         </>
     )
 }
-
-export default TaskManager

@@ -57,5 +57,3 @@ export const useTaskList = () => {
         apiRef,
     }
 }
-
-export default useTaskList
