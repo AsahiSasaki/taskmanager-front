@@ -1,9 +1,9 @@
 import { Box, Button, TextField } from '@mui/material'
 import { FC } from 'react'
-import { TaskData } from '../apis/api'
+import { TaskData } from '../models/taskData'
 import { FormState, UseFormRegister, UseFormSetValue } from 'react-hook-form'
 
-interface TaskFormDisplayProps {
+interface TaskFormProps {
     mode: number
     register: UseFormRegister<TaskData>
     onSubmit: () => void
@@ -15,7 +15,7 @@ interface TaskFormDisplayProps {
     setValue: UseFormSetValue<TaskData>
 }
 
-export const TaskFormDisplay: FC<TaskFormDisplayProps> = ({
+export const TaskForm: FC<TaskFormProps> = ({
     mode,
     status,
     register,
@@ -37,13 +37,13 @@ export const TaskFormDisplay: FC<TaskFormDisplayProps> = ({
                     label="タスク名"
                     fullWidth
                     multiline
-                    {...register('title', { required: 'タスク名は必須です' })}
+                    {...register('title')}
                     defaultValue={data?.title}
                     sx={{ width: 400 }}
                     error={Boolean(formState.errors.title)}
                     helperText={formState.errors.title?.message}
                     onBlur={(e) => {
-                        setValue('title', e.target.value, {
+                        setValue('title', e.currentTarget.value.trim(), {
                             shouldValidate: true,
                         })
                     }}
@@ -54,11 +54,16 @@ export const TaskFormDisplay: FC<TaskFormDisplayProps> = ({
                     label="タスク内容"
                     fullWidth
                     multiline
-                    {...register('description', {
-                        required: 'タスク内容は必須です',
-                    })}
+                    {...register('description')}
                     defaultValue={data?.description}
                     sx={{ width: 400 }}
+                    error={Boolean(formState.errors.description)}
+                    helperText={formState.errors.description?.message}
+                    onBlur={(e) => {
+                        setValue('description', e.currentTarget.value.trim(), {
+                            shouldValidate: true,
+                        })
+                    }}
                 />
             </Box>
             {mode === 0 ? (
@@ -69,6 +74,12 @@ export const TaskFormDisplay: FC<TaskFormDisplayProps> = ({
                         {...register('deadline')}
                         defaultValue={data?.deadline ?? formattedToday}
                         placeholder="Deadline"
+                        error={Boolean(formState.errors.deadline)}
+                        onBlur={(e) => {
+                            setValue('deadline', e.currentTarget.value, {
+                                shouldValidate: true,
+                            })
+                        }}
                     />
                     <Button
                         type="submit"
@@ -78,6 +89,21 @@ export const TaskFormDisplay: FC<TaskFormDisplayProps> = ({
                     >
                         登録
                     </Button>
+                    {formState.errors.deadline && (
+                        <Box
+                            style={{
+                                fontFamily: 'Roboto, Helvetica, Arial',
+                                fontSize: '0.75rem',
+                                fontWeight: '400',
+                                color: '#d32f2f',
+                                position: 'relative',
+                                top: '3px',
+                                left: '-95px',
+                            }}
+                        >
+                            {formState.errors.deadline.message}
+                        </Box>
+                    )}
                 </Box>
             ) : (
                 <>
@@ -88,7 +114,28 @@ export const TaskFormDisplay: FC<TaskFormDisplayProps> = ({
                             {...register('deadline')}
                             defaultValue={data?.deadline ?? formattedToday}
                             placeholder="Deadline"
+                            error={Boolean(formState.errors.deadline)}
+                            onBlur={(e) => {
+                                setValue('deadline', e.currentTarget.value, {
+                                    shouldValidate: true,
+                                })
+                            }}
                         />
+                        {formState.errors.deadline && (
+                            <Box
+                                style={{
+                                    fontFamily: 'Roboto, Helvetica, Arial',
+                                    fontSize: '0.75rem',
+                                    fontWeight: '400',
+                                    color: '#d32f2f',
+                                    position: 'relative',
+                                    top: '3px',
+                                    left: '14px',
+                                }}
+                            >
+                                {formState.errors.deadline.message}
+                            </Box>
+                        )}
                     </Box>
                     <Box sx={{ marginBottom: 2 }}>
                         <Button
@@ -108,5 +155,3 @@ export const TaskFormDisplay: FC<TaskFormDisplayProps> = ({
         </Box>
     )
 }
-
-export default TaskFormDisplay

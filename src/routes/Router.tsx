@@ -1,7 +1,7 @@
 import { Route, Routes } from 'react-router-dom'
-import TaskManager from '../pages/TaskManager'
+import { TaskManager } from '../pages/TaskManager'
 
-const Router = () => {
+export const Router = () => {
     return (
         <Routes>
             <Route path="/" element={<TaskManager />} />
@@ -9,4 +9,3 @@ const Router = () => {
     )
 }
 
-export default Router

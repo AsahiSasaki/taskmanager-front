@@ -4,15 +4,15 @@ import {
     DialogContent,
     DialogTitle,
     Button,
+    CircularProgress,
 } from '@mui/material'
-import TaskFormProvider, { updateFunctionState } from './TaskFormProvider'
-import { useRecoilState } from 'recoil'
-import { formIsValidState } from './TaskFormProvider'
+import { useTaskForm } from '../hooks/useTaskForm'
+import { TaskForm } from './TaskForm'
 
 interface TaskDialogProps {
+    selectedId?: number
     open: boolean
     handleClose: () => void
-    selectedId: number | null
 }
 
 export const TaskDialog: React.FC<TaskDialogProps> = ({
@@ -20,14 +20,29 @@ export const TaskDialog: React.FC<TaskDialogProps> = ({
     handleClose,
     selectedId,
 }) => {
-    //更新処理
-    const [updateFunction] = useRecoilState(updateFunctionState)
-    const [formIsValid] = useRecoilState(formIsValidState)
+    const {
+        register,
+        onSubmit,
+        data,
+        toggleStatus,
+        status,
+        formState,
+        isLoading,
+        setValue,
+        reset,
+    } = useTaskForm(selectedId, open, handleClose)
 
-    const handleUpdateClick = () => {
-        if (updateFunction && formIsValid) {
-            updateFunction()
-        }
+    if (!open) {
+        return null
+    }
+
+    if (isLoading || status === undefined) {
+        return <CircularProgress />
+    }
+
+    const handleCloseResetStatus = () => {
+        handleClose()
+        reset()
     }
 
     return (
@@ -42,17 +57,22 @@ export const TaskDialog: React.FC<TaskDialogProps> = ({
         >
             <DialogTitle>タスク詳細</DialogTitle>
             <DialogContent>
-                <TaskFormProvider
+                <TaskForm
                     mode={1}
-                    id={Number(selectedId)}
-                    handleClose={handleClose}
+                    register={register}
+                    onSubmit={onSubmit}
+                    data={data}
+                    toggleStatus={toggleStatus}
+                    status={status}
+                    formState={formState}
+                    setValue={setValue}
                 />
             </DialogContent>
             <DialogActions>
-                <Button onClick={handleUpdateClick} color="primary">
+                <Button onClick={onSubmit} color="primary">
                     更新
                 </Button>
-                <Button onClick={handleClose} color="primary">
+                <Button onClick={handleCloseResetStatus} color="primary">
                     閉じる
                 </Button>
             </DialogActions>
