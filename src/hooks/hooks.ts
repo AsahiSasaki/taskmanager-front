@@ -1,11 +1,16 @@
 import { useMutation, useQuery, useQueryClient } from 'react-query'
-import { deleteTask, getTasks } from '../apis/api'
+import { DefaultApi } from '../apis/resource/api'
 import { useState } from 'react'
 import { GridRowModel, useGridApiRef } from '@mui/x-data-grid'
 
+const api = new DefaultApi()
+
 //タスク一覧取得
 export const useTasks = () => {
-    const { isLoading, data } = useQuery('tasks', getTasks)
+    const { isLoading, data } = useQuery('tasks', async () => {
+        const response = await api.getTasks()
+        return response.data
+    })
     return { isLoading, data }
 }
 
@@ -33,7 +38,7 @@ export const useDeleteTask = () => {
         const selectedRows = apiRef.current.getSelectedRows()
         const deletePromises: Promise<void>[] = []
         selectedRows.forEach((v: GridRowModel) => {
-            deletePromises.push(deleteTask(v.id))
+            deletePromises.push(api.deleteTask(v.id).then(() => {}))
         })
         await Promise.all(deletePromises)
     }
