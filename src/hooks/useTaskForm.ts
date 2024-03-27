@@ -1,9 +1,15 @@
 import { useEffect } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import { useMutation, useQuery, useQueryClient } from 'react-query'
-import { createTask, getTask, updateTask } from '../apis/api'
 import { TaskData, TaskDataSchema } from '../models/taskData'
 import { zodResolver } from '@hookform/resolvers/zod'
+import {
+    DefaultApi,
+    TaskPutBody,
+    TaskPutBodyStatusEnum,
+} from '../apis/resource/api'
+
+const api = new DefaultApi()
 
 export const useTaskForm = (
     selectedId?: number,
@@ -17,7 +23,10 @@ export const useTaskForm = (
 
     const { data, isLoading } = useQuery(
         ['task', selectedId],
-        () => getTask(selectedId!),
+        async () => {
+            const response = await api.getTaskByID(selectedId!)
+            return response.data
+        },
         {
             enabled: !!selectedId,
         },
@@ -30,8 +39,26 @@ export const useTaskForm = (
         })
 
     const taskMutation = useMutation(
-        (data: TaskData) =>
-            selectedId ? updateTask(selectedId, data) : createTask(data),
+        (data: TaskData) => {
+            let status: TaskPutBodyStatusEnum | undefined
+            if (data.status !== undefined) {
+                status =
+                    data.status === 0
+                        ? TaskPutBodyStatusEnum.NUMBER_0
+                        : TaskPutBodyStatusEnum.NUMBER_1
+            }
+            const taskDataWithEnumStatus: TaskPutBody = {
+                ...data,
+                status: status,
+            }
+            return selectedId
+                ? api
+                      .updateTask(selectedId, taskDataWithEnumStatus)
+                      .then((response) => response)
+                : api
+                      .createTask(taskDataWithEnumStatus)
+                      .then((response) => response)
+        },
         {
             onSuccess: () => {
                 handleClose && handleClose()
@@ -46,10 +73,10 @@ export const useTaskForm = (
 
     useEffect(() => {
         if (data) {
-            setValue('title', data.title)
-            setValue('description', data.description)
-            setValue('deadline', data.deadline)
-            setValue('status', data.status)
+            data && setValue('title', data.title || '')
+            data && setValue('description', data.description || '')
+            data && setValue('deadline', data.deadline || '')
+            data && setValue('status', data.status)
         }
         if (!open) {
             setValue('status', undefined)
